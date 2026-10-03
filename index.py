@@ -4,9 +4,10 @@ import requests
 import os
 
 app = Flask(__name__)
-CORS(app)  # Ativa o CORS para permitir ligações vindas do seu HTML
+CORS(app)
 
-SAMBA_API_KEY = "628081f7-96e9-4bf1-a467-488a2f33284c"
+# Nova API Key configurada
+SAMBA_API_KEY = "ed055d9f-d61c-4bd3-9b79-4b677bc5c4a0"
 SAMBA_URL = "https://api.sambanova.ai/v1/chat/completions"
 LOCAL_API_KEY = "LEOMODZ"
 
@@ -27,7 +28,7 @@ def ask_sambanova():
     }
 
     payload = {
-        "model": "ALLaM-7B-Instruct-preview",
+        "model": "Meta-Llama-3.1-8B-Instruct",
         "messages": [
             {"role": "system", "content": "Você é um gerador de contas fictícias para o jogo Free Fire."},
             {"role": "user", "content": message}
@@ -42,8 +43,10 @@ def ask_sambanova():
 
         if "choices" in data and len(data["choices"]) > 0:
             reply = data["choices"][0]["message"]["content"]
+        elif "error" in data:
+            reply = f"Erro da API SambaNova: {data['error']}"
         else:
-            reply = "Sem resposta do modelo."
+            reply = f"Resposta inesperada: {data}"
 
         return jsonify({
             "status": "success",
